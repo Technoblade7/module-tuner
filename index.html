@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Swerve Module Tuner</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+            integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="columns columns-1">
+                <div class="col col-1 col-bg">
+                    <div class="frame">
+                        <img class="logo" src="logo.png" alt="" />
+                    </div>
+                </div>
+                <div class="col col-2 col-bg">
+                    <div class="col-up-item">
+                        <div class="col-up-item-block" ripple="ripple">
+                            <h1>FL</h1>
+                        </div>
+                        <div class="col-up-item-block" ripple="ripple">
+                            <h1>FR</h1>
+                        </div>
+                        <div class="col-up-item-block" ripple="ripple">
+                            <h1>RL</h1>
+                        </div>
+                        <div
+                            class="col-up-item-block col-up-item-block-last"
+                            ripple="ripple"
+                        >
+                            <h1>RR</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-3 col-bg">
+                    <div class="col-down-item">
+                        <div class="col-down-item-block">
+                            <div class="col-down-item-block-title">
+                                <h1>Target</h1>
+                            </div>
+                            <div class="col-down-item-block-container">
+                                <div class="col-down-item-block-field-1">
+                                    <h1 id="target"></h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-down-item-block">
+                            <div class="col-down-item-block-title">
+                                <h1>Position</h1>
+                            </div>
+                            <div
+                                class="col-down-item-block-container col-down-item-block-last"
+                            >
+                                <div class="col-down-item-block-field-2">
+                                    <h1 id="position"></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns columns-2">
+                <div class="col col-1 col-bg">
+                    <div class="frame">
+                        <h1>Galaxia <span>#5987</span> Swerve Module Tuner</h1>
+                    </div>
+                </div>
+                <div class="col col-2">
+                    <div class="gradient-container">
+                        <div class="images-container">
+                            <!-- <img class="wheel" src="wheel.png" alt="" />
+                            <img class="wheel" src="wheel.png" alt="" /> -->
+                            <img
+                                id="target-wheel"
+                                class="wheel opacity"
+                                src="wheel.png"
+                                alt=""
+                            />
+                            <img
+                                id="current-wheel"
+                                class="wheel"
+                                src="wheel.png"
+                                alt=""
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="gradient-container">
+                        <div class="graph-container">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns columns-3">
+                <div class="col col-1 col-bg" style="user-select: none">
+                    <div class="split">
+                        <div class="split-item split-item-left" ripple="ripple">
+                            <i class="fa-solid fa-gear icon"></i>
+                            <h1>&nbsp Settings</h1>
+                        </div>
+                        <div
+                            class="split-item split-item-right"
+                            onclick="toggleTheme()"
+                            ripple="ripple"
+                        >
+                            <i class="fa-solid fa-circle-half-stroke icon"></i>
+                            <h1>&nbsp Dark Mode</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="right-container">
+                        <div class="inputs-container">
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>kP</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>kI</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>kD</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>kF</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>S-Curve-Strength</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>Cruise Velocity</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>Acceleration</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>Allowable Error</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="label-container">
+                                    <label>Max Integral Accum</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div class="input-container input-container-last">
+                                <div class="label-container">
+                                    <label>Peak Output</label>
+                                </div>
+                                <div class="text-input-container">
+                                    <input type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="buttons-container">
+                            <div class="update-button" ripple="ripple">
+                                <h1>UPDATE</h1>
+                            </div>
+                            <div class="test-button" ripple="ripple">
+                                <h1>TEST</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="networktables/networktables.js"></script>
+        <script src="script.js"></script>
+        <script src="connection.js"></script>
+    </body>
+</html>
